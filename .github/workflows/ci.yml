@@ -1,0 +1,28 @@
+# `make ci` is the whole gate: the same steps, in the same order.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# The jobs only read the repository.
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+
+      - name: system packages
+        run: sudo apt-get update && sudo apt-get install -y libcairo2-dev pkg-config shellcheck
+
+      - uses: Hyperquader-Coders/setup-amber-odin@v1
+
+      - name: make ci
+        run: make ci
