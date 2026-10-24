@@ -1,0 +1,34 @@
+# `make ci` is the whole gate: the same steps, in the same order.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# The jobs only read the repository.
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    # The Makefile finds the Amber tree in AMBER_ROOT; here the workspace is that tree.
+    env:
+      AMBER_ROOT: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # ols: true brings odinfmt, which make ci's format check calls.
+      - uses: Hyperquader-Coders/setup-amber-odin@v1
+        with:
+          ols: true
+
+      # The packages are the Makefile's DEPS list.
+      - name: system packages
+        run: sudo apt-get update && make init-packages APT_FLAGS=-y
+
+      - name: make ci
+        run: make ci
