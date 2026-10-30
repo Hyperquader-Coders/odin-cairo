@@ -1,0 +1,50 @@
+# Generated with runic (docs/DECISIONS.md). Adapted from odin-gtk (MIT, docs/LICENSE-odin-gtk.md).
+version: 0
+platforms:
+  - Linux x86_64
+from:
+  language: c
+  shared.linux: 'libcairo.so'
+  headers: ../build/sys/usr/include/cairo/cairo.h
+  includedirs:
+    - ../stdinc/
+    - ../build/sys/usr/include/cairo/
+  defines:
+    CAIRO_COMPILATION: 1
+    CAIRO_HAS_PNG_FUNCTIONS: 1
+  load_all_includes: true
+  extern:
+    - "../stdinc/*"
+    - "../stdinc/sys/*"
+  overwrite:
+    types:
+      cairo_bool_t: '#Bool32'
+to:
+  language: odin
+  package: cairo
+  out: cairo.odin
+  trim_prefix:
+    types:
+      - cairo_
+    constants:
+      - CAIRO_
+    functions:
+      - cairo_
+    variables:
+      - cairo_
+    enum_type_name: true
+  add_prefix:
+    constants: '_CAIRO_'
+  detect:
+    parameters: declared
+    arrays:
+      set_dash: [dashes]
+      get_dash: [dashes]
+      glyph_free: [glyphs]
+      text_cluster_free: [clusters]
+      show_glyphs: [glyphs]
+      show_text_glyphs: [glyphs, clusters]
+      glyph_path: [glyphs]
+      glyph_extents: [glyphs]
+      scaled_font_glyph_extents: [glyphs]
+      region_create_rectangles: [rects]
